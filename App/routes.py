@@ -31,7 +31,11 @@ def not_found(e):
 
 @app.route('/')
 def index():
-    return render_template('unlogged/index.html')
+    valid = LoginControl.validation()
+    if valid[0]:
+        return redirect(url_for(f'{valid[2]}.index'))
+    else:
+        return render_template('unlogged/index.html')
 
 
 @app.route('/register', methods=["POST", "GET"])
@@ -47,7 +51,7 @@ def register():
             db.session.add(user)
             db.session.commit()
             flash('Account has been created!', 'success')
-            LoginControl.add_session(user.id, user.type, user.name, form.remember.data)
+            LoginControl.add_session(user.id, user.type, user.name, None)
             return redirect(url_for('user.index'))
         return render_template('unlogged/register.html', form=form)
 
@@ -72,17 +76,34 @@ def login():
             else:
                 flash('Username and Password does not match our database!', 'info')
         return render_template('unlogged/login.html', form=form)
-    
-    
+
+
+@app.route('/logout')
+def logout():
+    valid = LoginControl.validation()
+    if valid[0]:
+        LoginControl.pop_session()
+        flash("You have been logged out!")
+        return redirect(url_for('.login'))
+    else:
+        flash("You're already logged out!", "info")
+        return redirect(url_for('.login'))
+
+
 @app.route('/recipes')
 def recipes():
     valid = LoginControl.validation()
     if valid[0]:
-        return redirect(url_for(f'{valid[2]}.recipes.html'))
+        return redirect(url_for(f'{valid[2]}.recipes'))
     else:
         return render_template('unlogged/recipes.html')
 
 
 @app.route('/cooks')
 def cooks():
-    pass
+    valid = LoginControl.validation()
+    if valid[0]:
+        return redirect(url_for(f'{valid[2]}.cooks'))
+    else:
+        return render_template('unlogged/cooks.html')
+

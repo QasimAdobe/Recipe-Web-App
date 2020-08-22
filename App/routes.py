@@ -71,12 +71,16 @@ def login():
                     flash('Your account access has been suspended!', 'info')
             else:
                 flash('Username and Password does not match our database!', 'info')
-        return render_template("unlogged/login.html", title="Login", form=form)
+        return render_template('unlogged/login.html', form=form)
     
     
 @app.route('/recipes')
 def recipes():
-    pass
+    valid = LoginControl.validation()
+    if valid[0]:
+        return redirect(url_for(f'{valid[2]}.recipes.html'))
+    else:
+        return render_template('unlogged/recipes.html')
 
 
 @app.route('/cooks')

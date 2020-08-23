@@ -1,4 +1,16 @@
 from flask import session
+import secrets
+import os
+from App import app
+
+
+def save_file(form_image):
+    random_name = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(form_image.filename)
+    image_fn = random_name + f_ext
+    image_path = os.path.join(app.root_path, 'static/images', image_fn)
+    form_image.save(image_path)
+    return image_fn
 
 
 def validation():

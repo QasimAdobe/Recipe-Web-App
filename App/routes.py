@@ -19,7 +19,7 @@ from App.forms import (
 from App.models import (
     User,
 )
-from Controls import LoginControl
+from Controls import PassiveControls
 
 app.register_blueprint(admin, url_prefix="/admin")
 app.register_blueprint(user, url_prefix="/user")
@@ -32,7 +32,7 @@ def not_found(e):
 
 @app.route('/')
 def index():
-    valid = LoginControl.validation()
+    valid = PassiveControls.validation()
     if valid[0]:
         return redirect(url_for(f'{valid[2]}.index'))
     else:
@@ -41,25 +41,27 @@ def index():
 
 @app.route('/register', methods=["POST", "GET"])
 def register():
-    valid = LoginControl.validation()
+    valid = PassiveControls.validation()
     if valid[0]:
         return redirect(url_for(f'{valid[2]}.index'))
     else:
         form = RegisterForm()
         if request.method == "POST":
+            if form.image.data:
+                image_file = PassiveControls.save_file(form.image.data)
             hashed_pass = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-            user = User(name=form.name.data, username=form.username.data, email=form.email.data, password= hashed_pass, type= "user", designation="Chef")
+            user = User(name=form.name.data, username=form.username.data, email=form.email.data, password= hashed_pass, type= "user",
+                        designation=form.designation.data, profile_pic=image_file)
             db.session.add(user)
             db.session.commit()
-            flash('Account has been created!', 'success')
-            LoginControl.add_session(user.id, user.type, user.name, None)
+            PassiveControls.add_session(user.id, user.type, user.name, None)
             return redirect(url_for('user.index'))
         return render_template('unlogged/register.html', form=form)
 
 
 @app.route('/login', methods=["POST", "GET"])
 def login():
-    valid = LoginControl.validation()
+    valid = PassiveControls.validation()
     if valid[0]:
         return redirect(url_for(f'{valid[2]}.index'))
     else:
@@ -67,7 +69,7 @@ def login():
         if form.validate_on_submit():
             user = User.query.filter_by(username=form.username.data).first()
             if user and bcrypt.check_password_hash(user.password, form.password.data):
-                LoginControl.add_session(user.id, user.type, user.name, form.remember.data)
+                PassiveControls.add_session(user.id, user.type, user.name, form.remember.data)
                 if user.type == "admin":
                     return redirect(url_for('admin.index'))
                 elif user.type == "user":
@@ -81,9 +83,9 @@ def login():
 
 @app.route('/logout')
 def logout():
-    valid = LoginControl.validation()
+    valid = PassiveControls.validation()
     if valid[0]:
-        LoginControl.pop_session()
+        PassiveControls.pop_session()
         flash("You have been logged out!")
         return redirect(url_for('.login'))
     else:
@@ -93,7 +95,7 @@ def logout():
 
 @app.route('/recipes')
 def recipes():
-    valid = LoginControl.validation()
+    valid = PassiveControls.validation()
     if valid[0]:
         return redirect(url_for(f'{valid[2]}.recipes'))
     else:
@@ -102,7 +104,7 @@ def recipes():
 
 @app.route('/cooks')
 def cooks():
-    valid = LoginControl.validation()
+    valid = PassiveControls.validation()
     if valid[0]:
         return redirect(url_for(f'{valid[2]}.cooks'))
     else:

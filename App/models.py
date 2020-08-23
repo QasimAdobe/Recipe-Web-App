@@ -9,6 +9,7 @@ class User(db.Model):
     profile_pic = db.Column(db.String(20), nullable=False, default='default_user.jpg')
     password = db.Column(db.String(60), nullable=False)
     type = db.Column(db.String(10), nullable=False)
+    designation = db.Column(db.Text, nullable=False)
 
     ingredient = db.relationship('Ingredient', backref='ing_creator', lazy=True)
     recipes = db.relationship('Recipe', backref='recipe_creator', lazy=True)
@@ -35,6 +36,8 @@ class Recipe(db.Model):
     servings = db.Column(db.Integer, nullable=False)
     ingredients = db.Column(db.Text, nullable=False)
     image = db.Column(db.String(20), nullable=False, default="default.jpg")
+    approval = db.Column(db.Integer, nullable=False)
+    status = db.Column(db.String(12), nullable=False)
 
     created_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 

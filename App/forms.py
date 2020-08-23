@@ -4,6 +4,7 @@ from wtforms import (
     PasswordField,
     SubmitField,
     BooleanField,
+    SelectField,
 )
 from wtforms.validators import (
     DataRequired,
@@ -30,6 +31,7 @@ class RegisterForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    type = SelectField('User Type', validators=[DataRequired()], choices=[('Chef', 'Chef'), ('User', 'User')])
     submit = SubmitField('Register')
 
     def validate_username(self, username):

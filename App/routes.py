@@ -3,6 +3,7 @@ from flask import (
     flash,
     redirect,
     url_for,
+    request,
 )
 from App.views.admin import admin
 from App.views.user import user
@@ -45,9 +46,9 @@ def register():
         return redirect(url_for(f'{valid[2]}.index'))
     else:
         form = RegisterForm()
-        if form.validate_on_submit():
+        if request.method == "POST":
             hashed_pass = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-            user = User(name=form.name.data, username=form.username.data, email=form.email.data, password= hashed_pass, type= "user")
+            user = User(name=form.name.data, username=form.username.data, email=form.email.data, password= hashed_pass, type= "user", designation="Chef")
             db.session.add(user)
             db.session.commit()
             flash('Account has been created!', 'success')

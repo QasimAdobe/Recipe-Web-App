@@ -8,11 +8,11 @@
             <div class="row">
               <div class="col-12">
                 <div class="section-title">
-                  <div class="float-right"><h2> <a href="{{ url_for('admin.add_user') }}">Add User</a> </h2></div>
+                  <div class="float-right"><h2> <a href="{{ url_for('admin.add_ingredients') }}">Add an Ingredient</a> </h2></div>
 
-                  <h2>User List
+                  <h2>Ingredients
 
-                  {% with messages = get_flashed_messages() %}
+                    {% with messages = get_flashed_messages() %}
                 {% if messages %}
                     {% for msg in messages %}
                   : {{msg}}
@@ -22,14 +22,12 @@
                 {% endif %}
                 {% endwith %}
 
-
                   </h2>
-
-
-
                 </div>
               </div>
             </div>
+
+
             <div class="row">
 
               <div class="col-md-12">
@@ -40,19 +38,16 @@
         <thead>
             <tr>
                 <th>Name</th>
-                <th>Email</th>
-                <th>Designation</th>
-                <th>User Type</th>
+                <th>Added By</th>
                 <th>#</th>
             </tr>
         </thead>
         <tbody>
-        {% for users in user_data %}
+        {% for ingredient in ingredients %}
             <tr>
-                <td>{{users.name}}</td>
-                <td><a href="mailto: {{ users.email }}">{{users.email}}</a></td>
-                <td>{{ users.designation }}</td>
-                <td>{{ users.type|capitalize }}</td>
+                <td>{{ingredient.name}}</td>
+                <td><a href="">{{ingredient.ing_creator.name}}</a></td>
+
                 <td>
 
                   <div class="dropdown d-inline-block p-0">
@@ -60,9 +55,8 @@
                 Controls
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="{{ url_for('admin.user_profile', user_id=users.id ) }}">View Profile</a>
-                <a class="dropdown-item" href="{{ url_for('admin.suspend_user', user_id=users.id ) }}">Suspend User</a>
-                <a class="dropdown-item" href="{{ url_for('admin.delete_user', user_id=users.id ) }}">Delete User</a>
+                <a class="dropdown-item" href="">Edit Ingredient</a>
+                <a class="dropdown-item" href="{{ url_for('admin.delete_ingredient', ingredient_id=ingredient.id ) }}">Delete Ingredient</a>
 
               </div>
             </div>
@@ -75,24 +69,13 @@
     </table>
 
 
-
-
-
-
-
-
-
-
-
-
-
-              </div>
-
-
-            </div>
           </div>
+
+
+
+
 
         </div>
       </div>
     </div>
-{% endblock %}e
+{% endblock %}

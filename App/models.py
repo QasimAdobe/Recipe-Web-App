@@ -22,6 +22,7 @@ class Ingredient(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     details = db.Column(db.Text, nullable=False)
+    image = db.Column(db.String(20), nullable=False, default="default.jpg")
     created_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):

@@ -9,10 +9,12 @@ from flask import (
 from Controls import PassiveControls
 from App.models import (
     User,
+    Ingredient,
 )
 from App import db, bcrypt
 from App.forms import (
     RegisterForm,
+    IngredientForm,
 )
 
 
@@ -95,5 +97,47 @@ def delete_user(user_id):
         else:
             flash("You can't delete your own ID", "info")
         return redirect(url_for('admin.users'))
+    else:
+        return render_template("main/error.html", error=PassiveControls.ErrMsg.access)
+
+
+@admin.route('/ingredients')
+def ingredients():
+    valid = PassiveControls.validation()
+    if valid[0] and valid[2] == "admin":
+        ingredient = Ingredient.query.all()
+        return render_template('admin/ingredients.html', user=valid[3], ingredients=ingredient)
+    else:
+        return render_template("error.html", error=PassiveControls.ErrMsg.access)
+
+
+@admin.route('/ingredients/add', methods=["POST", "GET"])
+def add_ingredients():
+    valid = PassiveControls.validation()
+    if valid[0] and valid[2] == "admin":
+        form = IngredientForm()
+        if form.validate_on_submit():
+            if form.image.data:
+                image_file = PassiveControls.save_file(form.image.data)
+            ingredient = Ingredient(name=form.name.data, details=form.description.data, image=image_file,
+                                    created_by=valid[1])
+            db.session.add(ingredient)
+            db.session.commit()
+            flash('Ingredient has been added!', 'success')
+            return redirect(url_for('admin.ingredients'))
+        return render_template('admin/add_ingredients.html', user=valid[3], form=form)
+    else:
+        return render_template("error.html", error=PassiveControls.ErrMsg.access)
+
+
+@admin.route('/ingredient/delete/<int:ingredient_id>')
+def delete_ingredient(ingredient_id):
+    valid = PassiveControls.validation()
+    ing = Ingredient.query.get_or_404(ingredient_id)
+    if valid[0] and valid[2] == "admin":
+        db.session.delete(ing)
+        db.session.commit()
+        flash("Ingredient has been deleted!", "info")
+        return redirect(url_for('admin.ingredients'))
     else:
         return render_template("main/error.html", error=PassiveControls.ErrMsg.access)

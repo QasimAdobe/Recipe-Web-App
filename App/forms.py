@@ -6,6 +6,7 @@ from wtforms import (
     SubmitField,
     BooleanField,
     SelectField,
+    TextAreaField,
 )
 from wtforms.validators import (
     DataRequired,
@@ -16,6 +17,7 @@ from wtforms.validators import (
 )
 from App.models import (
     User,
+    Ingredient,
 )
 from Controls import PassiveControls
 
@@ -72,3 +74,15 @@ class UpdateProfileForm(FlaskForm):
             user = User.query.filter_by(email=email.data).first()
             if user:
                 raise ValidationError('Email has been taken, Please use another one!')
+
+
+class IngredientForm(FlaskForm):
+    name = StringField('Ingredient Name', validators=[DataRequired()])
+    image = FileField('Ingredient Picture', validators=[FileAllowed(['jpg', 'png', 'jpeg'])])
+    description = TextAreaField('Ingredient Details')
+    submit = SubmitField('Submit')
+
+    def validate_name(self, name):
+        ing = Ingredient.query.filter_by(name=name.data).first()
+        if ing:
+            raise ValidationError('Ingredient has been added, Please add another one!')

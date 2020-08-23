@@ -94,3 +94,5 @@ def publish_recipe():
         return render_template('user/publish.html', user=valid[3])
     else:
         return render_template("error.html", error=PassiveControls.ErrMsg.access)
+
+

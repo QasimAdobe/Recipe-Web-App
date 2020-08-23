@@ -110,3 +110,12 @@ def cooks():
     else:
         return render_template('unlogged/cooks.html')
 
+
+@app.route('/ingredients')
+def ingredients():
+    valid = PassiveControls.validation()
+    if valid[0]:
+        return redirect(url_for(f'{valid[2]}.ingredients'))
+    else:
+        return render_template('unlogged/ingredients.html')
+

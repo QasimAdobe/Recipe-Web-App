@@ -34,6 +34,7 @@ class RegisterForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     image = FileField('Profile Picture', validators=[FileAllowed(['jpg', 'png', 'jpeg'])])
+    type = SelectField('User Type', validators=[DataRequired()], choices=[('admin', 'Admin'), ('user', 'User')])
     designation = StringField('Job Designation', validators=[DataRequired()])
     submit = SubmitField('Register')
 

@@ -55,7 +55,7 @@
                 Controls
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="">Edit Ingredient</a>
+                <a class="dropdown-item" href="{{ url_for('admin.edit_ingredients', ingredient_id=ingredient.id ) }}">Edit Ingredient</a>
                 <a class="dropdown-item" href="{{ url_for('admin.delete_ingredient', ingredient_id=ingredient.id ) }}">Delete Ingredient</a>
 
               </div>

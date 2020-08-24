@@ -1,4 +1,4 @@
-{% extends "user/base.html" %}
+{% extends "unlogged/base.html" %}
 
 {% block content %}
 
@@ -15,28 +15,46 @@
             </div>
             <div class="row">
 
-              <div class="col-md-6">
+              <div class="col-md-12">
+
+                {% for users in users %}
                 <div class="post-entry-2 d-flex bg-light">
-                 <div class="thumbnail" style="background-image: url('{{ url_for('static', filename= 'images/' + profile.profile_pic) }}')"></div>
+                 <div class="thumbnail" style="background-image: url('{{ url_for('static', filename= 'images/' + users.profile_pic) }}')"></div>
 
                   <div class="contents">
-                    <h2><a href="">Contact Information</a> <a href="{{ url_for('user.edit_profile') }}" style="color: #5d5b5b">(Edit Profile)</a></h2>
+                    <h2><a href="{{ url_for('user_profile', user_id=users.id ) }}">Name: {{users.name}}</a></h2>
                     <div class="post-meta">
-                      <span class="d-block">Name : {{ profile.name }}</span>
-                      <span class="d-block">Email : <a href="mailto: {{ profile.email }}">{{ profile.email }}</a></span>
-                      <span class="d-block">Designation : {{ profile.designation }}</span>
+                      <span class="d-block">Username : {{users.username}}</span>
+                      <span class="d-block">Email : <a href="mailto: {{ users.email }}">{{users.email}}</a></span>
+                      <span class="d-block">User Type : {{ users.type|capitalize }}</span>
+                      <span class="d-block">Recipe Posted : {{ users.recipes|length }}</span>
                     </div>
                   </div>
                 </div>
-
+                {% endfor %}
 
               </div>
 
 
 
-          </div>
 
+
+          </div>
         </div>
+
+          <div class="mx-auto">
+                <br>
+              <nav aria-label="Page navigation example">
+              <ul class="pagination">
+                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+              </ul>
+            </nav>
+
+          </div>
       </div>
     </div>
 

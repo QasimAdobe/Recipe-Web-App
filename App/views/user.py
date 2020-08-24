@@ -8,6 +8,7 @@ from flask import (
 from App.models import (
     User,
     Recipe,
+    Ingredient,
 )
 from App import app, db
 from App.forms import UpdateProfileForm
@@ -69,11 +70,33 @@ def recipes():
         return render_template("error.html", error=PassiveControls.ErrMsg.access)
 
 
-@user.route('/cooks')
+@user.route('/chefs')
 def cooks():
     valid = PassiveControls.validation()
     if valid[0] and valid[2] == "user":
-        return render_template('user/cooks.html', user=valid[3])
+        users = User.query.filter_by(type="user").all()
+        return render_template('user/cooks.html', user=valid[3], users=users)
+    else:
+        return render_template("error.html", error=PassiveControls.ErrMsg.access)
+
+
+@user.route('/chef/<int:user_id>')
+def user_profile(user_id):
+    valid = PassiveControls.validation()
+    if valid[0] and valid[2] == "user":
+        user_data = User.query.get_or_404(user_id)
+        recipe = Recipe.query.filter_by(created_by=valid[1]).all()
+        return render_template('user/user_profile.html', user=valid[3], profile=user_data, recipes=recipe)
+    else:
+        return render_template("error.html", error=PassiveControls.ErrMsg.access)
+
+
+@user.route('/ingredients')
+def ingredients():
+    valid = PassiveControls.validation()
+    if valid[0] and valid[2] == "user":
+        ingredient = Ingredient.query.all()
+        return render_template('user/ingredients.html', user=valid[3], ingredients=ingredient)
     else:
         return render_template("error.html", error=PassiveControls.ErrMsg.access)
 

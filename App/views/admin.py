@@ -10,6 +10,7 @@ from Controls import PassiveControls
 from App.models import (
     User,
     Ingredient,
+    Recipe,
 )
 from App import db, bcrypt
 from App.forms import (
@@ -64,9 +65,10 @@ def user_profile(user_id):
     valid = PassiveControls.validation()
     if valid[0] and valid[2] == "admin":
         user_data = User.query.get_or_404(user_id)
-        return render_template('admin/user_profile.html',user=valid[3], profile=user_data)
+        recipe = Recipe.query.filter_by(created_by=valid[1]).all()
+        return render_template('admin/user_profile.html',user=valid[3], profile=user_data, recipes=recipe)
     else:
-        return render_template("main/error.html", error=PassiveControls.ErrMsg.access)
+        return render_template("error.html", error=PassiveControls.ErrMsg.access)
 
 
 @admin.route('/suspend/<int:user_id>')
@@ -82,7 +84,7 @@ def suspend_user(user_id):
             flash("You can't suspend your own ID", "info")
         return redirect(url_for('admin.users'))
     else:
-        return render_template("main/error.html", error=PassiveControls.ErrMsg.access)
+        return render_template("error.html", error=PassiveControls.ErrMsg.access)
 
 
 @admin.route('/delete/<int:user_id>')
@@ -98,7 +100,7 @@ def delete_user(user_id):
             flash("You can't delete your own ID", "info")
         return redirect(url_for('admin.users'))
     else:
-        return render_template("main/error.html", error=PassiveControls.ErrMsg.access)
+        return render_template("error.html", error=PassiveControls.ErrMsg.access)
 
 
 @admin.route('/ingredients')
@@ -133,11 +135,35 @@ def add_ingredients():
 @admin.route('/ingredient/delete/<int:ingredient_id>')
 def delete_ingredient(ingredient_id):
     valid = PassiveControls.validation()
-    ing = Ingredient.query.get_or_404(ingredient_id)
     if valid[0] and valid[2] == "admin":
+        ing = Ingredient.query.get_or_404(ingredient_id)
         db.session.delete(ing)
         db.session.commit()
         flash("Ingredient has been deleted!", "info")
         return redirect(url_for('admin.ingredients'))
     else:
-        return render_template("main/error.html", error=PassiveControls.ErrMsg.access)
+        return render_template("error.html", error=PassiveControls.ErrMsg.access)
+
+
+@admin.route('/ingredient/edit/<int:ingredient_id>', methods=["POST", "GET"])
+def edit_ingredients(ingredient_id):
+    valid = PassiveControls.validation()
+    if valid[0] and valid[2] == "admin":
+        ing = Ingredient.query.get_or_404(ingredient_id)
+        form = IngredientForm()
+        if form.validate_on_submit():
+            if form.image.data:
+                image_file = PassiveControls.save_file(form.image.data)
+                ing.image = image_file
+            ing.name = form.name.data
+            ing.details = form.description.data
+            db.session.commit()
+            flash('Ingredient has been added!', 'success')
+            return redirect(url_for('admin.ingredients'))
+        elif request.method == "GET":
+            form.name.data = ing.name
+            form.description.data = ing.details
+            return render_template('admin/edit_ingredients.html', user=valid[3], form=form)
+    else:
+        return render_template("error.html", error=PassiveControls.ErrMsg.access)
+

@@ -18,6 +18,8 @@ from App.forms import (
 )
 from App.models import (
     User,
+    Ingredient,
+    Recipe,
 )
 from Controls import PassiveControls
 
@@ -102,13 +104,25 @@ def recipes():
         return render_template('unlogged/recipes.html')
 
 
-@app.route('/cooks')
+@app.route('/chefs')
 def cooks():
     valid = PassiveControls.validation()
     if valid[0]:
         return redirect(url_for(f'{valid[2]}.cooks'))
     else:
-        return render_template('unlogged/cooks.html')
+        users = User.query.filter_by(type="user").all()
+        return render_template('unlogged/cooks.html', users=users)
+
+
+@app.route('/chef/<int:user_id>')
+def user_profile(user_id):
+    valid = PassiveControls.validation()
+    if valid[0]:
+        return redirect(url_for(f'{valid[2]}.index'))
+    else:
+        user_data = User.query.get_or_404(user_id)
+        recipe = Recipe.query.filter_by(created_by=valid[1]).all()
+        return render_template('unlogged/user_profile.html',user=valid[3], profile=user_data, recipes=recipe)
 
 
 @app.route('/ingredients')
@@ -117,5 +131,6 @@ def ingredients():
     if valid[0]:
         return redirect(url_for(f'{valid[2]}.ingredients'))
     else:
-        return render_template('unlogged/ingredients.html')
+        ingredient = Ingredient.query.all()
+        return render_template('unlogged/ingredients.html', ingredients=ingredient)
 

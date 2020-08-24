@@ -7,6 +7,8 @@ from wtforms import (
     BooleanField,
     SelectField,
     TextAreaField,
+    IntegerField,
+    SelectMultipleField,
 )
 from wtforms.validators import (
     DataRequired,
@@ -86,3 +88,19 @@ class IngredientForm(FlaskForm):
         ing = Ingredient.query.filter_by(name=name.data).first()
         if ing:
             raise ValidationError('Ingredient has been added, Please add another one!')
+
+
+class RecipeForm(FlaskForm):
+    title = StringField('Recipe Name', validators=[DataRequired()])
+    description = TextAreaField('Recipe Details', validators=[DataRequired()])
+    time = IntegerField('Time Needed to Cook', validators=[DataRequired()])
+    servings = IntegerField('Servings', validators=[DataRequired()])
+    image = FileField('Dish Picture', validators=[FileAllowed(['jpg', 'png', 'jpeg'])])
+    ingredients = StringField('Ingredients', validators=[DataRequired()])
+    submit = SubmitField('Publish')
+
+
+class ApproveRecipeForm(FlaskForm):
+    approval = SelectField('Type', validators=[DataRequired()], choices=[('1', 'Approved'), ('0', 'Rejected')])
+    status = SelectField('Praise', validators=[DataRequired()], choices=[("1", "Editor's Pick"), ('2', 'Weekly Featured'), ('0', 'Normal')])
+    submit = SubmitField('Submit')

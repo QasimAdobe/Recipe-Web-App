@@ -4,14 +4,18 @@ from flask import (
     url_for,
     request,
     redirect,
+    flash,
 )
 from App.models import (
     User,
     Recipe,
     Ingredient,
 )
-from App import app, db
-from App.forms import UpdateProfileForm
+from App import db
+from App.forms import (
+    UpdateProfileForm,
+    RecipeForm,
+)
 from Controls import PassiveControls
 user = Blueprint("user", __name__, static_folder="static", template_folder="templates")
 
@@ -110,11 +114,22 @@ def saved():
         return render_template("error.html", error=PassiveControls.ErrMsg.access)
 
 
-@user.route('/publish')
+@user.route('/publish', methods=["POST", "GET"])
 def publish_recipe():
     valid = PassiveControls.validation()
     if valid[0] and valid[2] == "user":
-        return render_template('user/publish.html', user=valid[3])
+        form = RecipeForm()
+        if form.validate_on_submit():
+            if form.image.data:
+                image_file = PassiveControls.save_file(form.image.data)
+            recipe = Recipe(title=form.title.data, description=form.description.data,time=form.time.data,
+                            servings=form.servings.data, ingredients=form.ingredients.data, image=image_file,
+                            approval="-1", status="0", created_by=valid[1])
+            db.session.add(recipe)
+            db.session.commit()
+            flash("Recipe has been published, please wait till its approved by our team.", "success")
+            return redirect(url_for('user.index'))
+        return render_template('user/publish.html', user=valid[3], form=form)
     else:
         return render_template("error.html", error=PassiveControls.ErrMsg.access)
 

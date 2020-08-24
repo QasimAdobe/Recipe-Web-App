@@ -65,15 +65,6 @@ def edit_profile():
         return render_template("error.html", error=PassiveControls.ErrMsg.access)
 
 
-@user.route('/recipes')
-def recipes():
-    valid = PassiveControls.validation()
-    if valid[0] and valid[2] == "user":
-        return render_template('user/recipes.html', user=valid[3])
-    else:
-        return render_template("error.html", error=PassiveControls.ErrMsg.access)
-
-
 @user.route('/chefs')
 def cooks():
     valid = PassiveControls.validation()
@@ -130,6 +121,26 @@ def publish_recipe():
             flash("Recipe has been published, please wait till its approved by our team.", "success")
             return redirect(url_for('user.index'))
         return render_template('user/publish.html', user=valid[3], form=form)
+    else:
+        return render_template("error.html", error=PassiveControls.ErrMsg.access)
+
+
+@user.route('/recipes')
+def recipes():
+    valid = PassiveControls.validation()
+    if valid[0] and valid[2] == "user":
+        recipe = Recipe.filter_by(approval=1).query.all()
+        return render_template('user/recipes.html', user=valid[3], recipes=recipe)
+    else:
+        return render_template("error.html", error=PassiveControls.ErrMsg.access)
+
+
+@user.route('/recipe/<int:recipe_id>')
+def single_recipe(recipe_id):
+    valid = PassiveControls.validation()
+    if valid[0] and valid[2] == "user":
+        recipe = Recipe.query.get_or_404(recipe_id)
+        return render_template('user/single.html', user=valid[3], recipes=recipe)
     else:
         return render_template("error.html", error=PassiveControls.ErrMsg.access)
 

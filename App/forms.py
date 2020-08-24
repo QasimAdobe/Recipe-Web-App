@@ -102,5 +102,5 @@ class RecipeForm(FlaskForm):
 
 class ApproveRecipeForm(FlaskForm):
     approval = SelectField('Type', validators=[DataRequired()], choices=[('1', 'Approved'), ('0', 'Rejected')])
-    status = SelectField('Praise', validators=[DataRequired()], choices=[("1", "Editor's Pick"), ('2', 'Weekly Featured'), ('0', 'Normal')])
+    status = SelectField('Featured As', validators=[DataRequired()], choices=[("1", "Editor's Pick"), ('2', 'Weekly Featured'), ('0', 'Normal')])
     submit = SubmitField('Submit')

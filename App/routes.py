@@ -101,7 +101,18 @@ def recipes():
     if valid[0]:
         return redirect(url_for(f'{valid[2]}.recipes'))
     else:
-        return render_template('unlogged/recipes.html')
+        recipe = Recipe.filter_by(approval=1).query.all()
+        return render_template('unlogged/recipes.html', recipes=recipe)
+
+
+@app.route('/recipe/<int:recipe_id>')
+def single_recipe(recipe_id):
+    valid = PassiveControls.validation()
+    if valid[0]:
+        return redirect(url_for(f'{valid[2]}.recipes'))
+    else:
+        recipe = Recipe.query.get_or_404(recipe_id)
+        return render_template('admin/single.html', recipes=recipe)
 
 
 @app.route('/chefs')

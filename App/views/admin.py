@@ -16,6 +16,7 @@ from App import db, bcrypt
 from App.forms import (
     RegisterForm,
     IngredientForm,
+    ApproveRecipeForm,
 )
 
 
@@ -167,3 +168,70 @@ def edit_ingredients(ingredient_id):
     else:
         return render_template("error.html", error=PassiveControls.ErrMsg.access)
 
+
+@admin.route('/recipes')
+def recipes():
+    valid = PassiveControls.validation()
+    if valid[0] and valid[2] == "admin":
+        recipe = Recipe.query.all()
+        return render_template('admin/recipes.html', user=valid[3], recipes=recipe)
+    else:
+        return render_template("error.html", error=PassiveControls.ErrMsg.access)
+
+
+@admin.route('/recipe/<int:recipe_id>')
+def single_recipe(recipe_id):
+    valid = PassiveControls.validation()
+    if valid[0] and valid[2] == "admin":
+        recipe = Recipe.query.get_or_404(recipe_id)
+        return render_template('admin/single.html', user=valid[3], recipes=recipe)
+    else:
+        return render_template("error.html", error=PassiveControls.ErrMsg.access)
+
+
+@admin.route('/recipe/approval/<int:recipe_id>', methods=["POST", "GET"])
+def approval(recipe_id):
+    valid = PassiveControls.validation()
+    if valid[0] and valid[2] == "admin":
+        recipe = Recipe.query.get_or_404(recipe_id)
+        form = ApproveRecipeForm()
+        if form.validate_on_submit():
+            recipe.approval = form.approval.data
+            recipe.status = form.status.data
+            db.session.commit()
+            flash("Approval command has been executed!")
+            return redirect(url_for('admin.recipes'))
+        return render_template('admin/approval.html', user=valid[3], form=form, recipe=recipe)
+    else:
+        return render_template("error.html", error=PassiveControls.ErrMsg.access)
+
+
+@admin.route('/recipe/featured/<int:recipe_id>', methods=["POST", "GET"])
+def featured(recipe_id):
+    valid = PassiveControls.validation()
+    if valid[0] and valid[2] == "admin":
+        recipe = Recipe.query.get_or_404(recipe_id)
+        form = ApproveRecipeForm()
+        if request.method == "POST":
+            recipe.status = form.status.data
+            db.session.commit()
+            flash("Featured command has been executed!")
+            return redirect(url_for('admin.recipes'))
+        elif request.method == "GET":
+            form.status.data = recipe.status
+            return render_template('admin/featured.html', user=valid[3], form=form, recipe=recipe)
+    else:
+        return render_template("error.html", error=PassiveControls.ErrMsg.access)
+
+
+@admin.route('/recipe/delete/<int:recipe_id>')
+def delete_recipe(recipe_id):
+    valid = PassiveControls.validation()
+    if valid[0] and valid[2] == "admin":
+        recipe = Recipe.query.get_or_404(recipe_id)
+        db.session.delete(recipe)
+        db.session.commit()
+        flash("Recipe has been deleted!", "info")
+        return redirect(url_for('admin.recipes'))
+    else:
+        return render_template("error.html", error=PassiveControls.ErrMsg.access)

@@ -90,7 +90,7 @@
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 <a class="dropdown-item" href="{{ url_for('user.profile') }}">Profile</a>
-                <a class="dropdown-item" href="#">Change Password</a>
+                <a class="dropdown-item" href="{{ url_for('user.change_password') }}">Change Password</a>
                 <a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a>
               </div>
             </div>

@@ -17,6 +17,7 @@ from App.forms import (
     RegisterForm,
     IngredientForm,
     ApproveRecipeForm,
+    ChangePasswordForm,
 )
 
 
@@ -71,6 +72,23 @@ def user_profile(user_id):
         user_data = User.query.get_or_404(user_id)
         recipe = Recipe.query.filter_by(created_by=valid[1]).all()
         return render_template('admin/user_profile.html',user=valid[3], profile=user_data, recipes=recipe)
+    else:
+        return render_template("error.html", error=PassiveControls.ErrMsg.access)
+
+
+@admin.route('/password/change', methods=["POST", "GET"])
+def change_password():
+    valid = PassiveControls.validation()
+    if valid[0] and valid[2] == "admin":
+        form = ChangePasswordForm()
+        users = User.query.get_or_404(valid[1])
+        if form.validate_on_submit():
+            hashed_pass = bcrypt.generate_password_hash(form.new_password.data).decode('utf-8')
+            users.password = hashed_pass
+            db.session.commit()
+            flash("Password has been changed.")
+            return redirect(url_for('admin.users'))
+        return render_template('admin/change_password.html', user=valid[3], users=users, form=form)
     else:
         return render_template("error.html", error=PassiveControls.ErrMsg.access)
 

@@ -104,3 +104,11 @@ class ApproveRecipeForm(FlaskForm):
     approval = SelectField('Type', validators=[DataRequired()], choices=[('1', 'Approved'), ('0', 'Rejected')])
     status = SelectField('Featured As', validators=[DataRequired()], choices=[("1", "Editor's Pick"), ('2', 'Weekly Featured'), ('0', 'Normal')])
     submit = SubmitField('Submit')
+    
+    
+class ChangePasswordForm(FlaskForm):
+    password = PasswordField('Old Password', validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    new_password = PasswordField('New Password', validators=[DataRequired()])
+    submit = SubmitField('Change Password')
+

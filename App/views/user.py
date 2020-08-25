@@ -12,10 +12,11 @@ from App.models import (
     Ingredient,
     Saved,
 )
-from App import db
+from App import db, bcrypt
 from App.forms import (
     UpdateProfileForm,
     RecipeForm,
+    ChangePasswordForm,
 )
 from Controls import PassiveControls
 user = Blueprint("user", __name__, static_folder="static", template_folder="templates")
@@ -65,6 +66,22 @@ def edit_profile():
             form.email.data = user.email
             form.designation.data = user.designation
             return render_template('user/edit_profile.html', user=valid[3], form=form)
+    else:
+        return render_template("error.html", error=PassiveControls.ErrMsg.access)
+
+
+@user.route('/password/change', methods=["POST", "GET"])
+def change_password():
+    valid = PassiveControls.validation()
+    if valid[0] and valid[2] == "user":
+        form = ChangePasswordForm()
+        users = User.query.get_or_404(valid[1])
+        if form.validate_on_submit():
+            hashed_pass = bcrypt.generate_password_hash(form.new_password.data).decode('utf-8')
+            users.password = hashed_pass
+            db.session.commit()
+            return redirect(url_for('user.index'))
+        return render_template('user/change_password.html', user=valid[3], users=users, form=form)
     else:
         return render_template("error.html", error=PassiveControls.ErrMsg.access)
 

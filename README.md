@@ -15,7 +15,11 @@ pip install -r requirements.txt
 Then edit the following line in ```init.py``` located in ```Recipe-Web-App/App```
 ```python
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://DB_USERNAME:DB_PASSWORD@DB_HOST/DB_NAME'
+
+# To use SQLite remove the above code and paste this.
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 ```
+
 then run ```python run.py``` After running run.py visit 
 ```
 your_url.com/install

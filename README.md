@@ -11,13 +11,12 @@ git clone https://github.com/kibwalid/Recipe-Web-App.git
 cd Recipe-Web-App
 .\env\Scripts\activate
 pip install -r requirements.txt
-python run.py
 ```
 Then edit the following line in ```init.py``` located in ```Recipe-Web-App/App```
 ```python
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://DB_USERNAME:DB_PASSWORD@DB_HOST/DB_NAME'
 ```
-then run run.py. After running run.py visit 
+then run ```python run.py``` After running run.py visit 
 ```
 your_url.com/install
 ```

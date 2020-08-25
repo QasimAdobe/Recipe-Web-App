@@ -23,7 +23,8 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/aos.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.mb.YTPlayer.min.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.2/css/buttons.bootstrap4.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
 
 
 
@@ -177,8 +178,9 @@
           <div class="col-12">
             <div class="copyright">
                 <p>
-                    This template has been designed By <a href="https://colorlib.com/wp/template/meranda" target="_blank" >Colorlib</a>
-                    </p>
+                    Information and Source Code of this site will be found in <a href="https://github.com/kibwalid/Recipe-Web-App">GitHub</a>
+                  <br>Contact : <a href="mailto:kibwalid@gmail.com">kibwalid@gmail.com</a></p>
+
             </div>
           </div>
         </div>
@@ -212,7 +214,14 @@
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 
 
+    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="https://nightly.datatables.net/js/jquery.dataTables.js"></script>
+    <script type="text/javascript">
+        $(document).ready( function () {
+      var table = $('#example').DataTable();
+    } );
 
+    </script>
 
 
 </body>

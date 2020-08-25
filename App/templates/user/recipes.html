@@ -9,6 +9,7 @@
             <div class="section-title">
               <h2>All Recipes</h2>
             </div>
+            {% if recipes %}
 
             {% for recipe in recipes %}
             <div class="post-entry-2 d-flex">
@@ -17,12 +18,12 @@
 
 
                 <div class="contents order-md-2">
-                <div class="float-right"><h2><a href="">
+                <div class="float-right"><h2><a href="{{ url_for('user.save_recipe', recipe_id=recipe.id ) }}">
                                        <u>Save Recipe</u> </a> </h2></div>
 
 
                 <h2><a href="{{ url_for('user.single_recipe', recipe_id=recipe.id ) }}">{{recipe.title}}</a></h2>
-                <p class="mb-3">{{recipe.description[:250]}}<a href="{{ url_for('user.single_recipe', recipe_id=recipe.id ) }}">Read more...</a></p>
+                <p class="mb-3">{{recipe.description[:250]}} <a href="{{ url_for('user.single_recipe', recipe_id=recipe.id ) }}">Read more...</a></p>
                 <div class="post-meta">
                   <span class="d-block">Author: <a href="#">{{recipe.recipe_creator.name}}</a></span>
                   <span class="date-read">
@@ -40,8 +41,28 @@
               </div>
             </div>
             {% endfor %}
+            {% else %}
+            <p>There are no recipes published yet.</p>
+            {% endif %}
+          </div>
+
+          {% if recipes %}
+
+          <div class="mx-auto">
+                <br>
+              <nav aria-label="Page navigation example">
+              <ul class="pagination">
+                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+              </ul>
+            </nav>
 
           </div>
+                  {% else %}
+                  {% endif %}
 
         </div>
       </div>

@@ -17,7 +17,7 @@
             <div class="row">
 
               <div class="col-md-6">
-
+                  {% if ingredients %}
                   {% for ingredient in ingredients %}
                 <div class="post-entry-2 d-flex bg-light">
                  <div class="thumbnail" style="background-image: url('{{ url_for('static', filename= 'images/' + ingredient.image) }}')"></div>
@@ -39,7 +39,9 @@
                   </div>
                 </div>
                   {% endfor %}
-
+                  {% else %}
+                  <p>There are no products in shop at this moment.</p>
+                  {% endif %}
 
 
 
@@ -51,6 +53,7 @@
             </div>
           </div>
 
+            {% if ingredients %}
 
           <div class="mx-auto">
                 <br>
@@ -65,7 +68,8 @@
             </nav>
 
           </div>
-
+                  {% else %}
+                  {% endif %}
 
         </div>
       </div>

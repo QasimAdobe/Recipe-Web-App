@@ -121,7 +121,7 @@ def publish_recipe():
 def recipes():
     valid = PassiveControls.validation()
     if valid[0] and valid[2] == "user":
-        recipe = Recipe.query.filter_by(approval=-1 and 1).all()
+        recipe = Recipe.query.all()
         return render_template('user/recipes.html', user=valid[3], recipes=recipe)
     else:
         return render_template("error.html", error=PassiveControls.ErrMsg.access)
@@ -189,7 +189,7 @@ def delete_recipe(recipe_id):
             flash("Recipe has been deleted!", "info")
         else:
             flash("You don't have access to delete this recipe!", "info")
-        return redirect(url_for('user.recipes'))
+        return redirect(url_for('user.my_recipes'))
     else:
         return render_template("error.html", error=PassiveControls.ErrMsg.access)
 
@@ -202,7 +202,7 @@ def save_recipe(recipe_id):
         db.session.add(save)
         db.session.commit()
         flash("Recipe has been saved!", "info")
-        return redirect(url_for('user.recipes'))
+        return redirect(url_for('user.saved'))
     else:
         return render_template("error.html", error=PassiveControls.ErrMsg.access)
 
@@ -211,13 +211,13 @@ def save_recipe(recipe_id):
 def saved():
     valid = PassiveControls.validation()
     if valid[0] and valid[2] == "user":
-        saved_recipe = Saved.query.filter_by(user_id=valid[1])
-        return render_template('user/saved.html', user=valid[3], saved=saved_recipe)
+        saved_recipe = Saved.query.filter_by(user_id=valid[1]).all()
+        return render_template('user/saved.html', user=valid[3], saves=saved_recipe)
     else:
         return render_template("error.html", error=PassiveControls.ErrMsg.access)
 
 
-@user.route('/save/remove/<int:recipe_id>')
+@user.route('/save/remove/<int:save_id>')
 def remove_saved(save_id):
     valid = PassiveControls.validation()
     if valid[0] and valid[2] == "user":

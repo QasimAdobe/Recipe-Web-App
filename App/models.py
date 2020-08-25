@@ -40,6 +40,8 @@ class Recipe(db.Model):
     approval = db.Column(db.Integer, nullable=False)
     status = db.Column(db.String(12), nullable=False)
 
+    saved = db.relationship('Saved', backref='saved_recipe', lazy=True)
+
     created_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):
@@ -49,10 +51,9 @@ class Recipe(db.Model):
 class Saved(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, nullable=False)
-    recipe_id = db.Column(db.Integer, nullable=False)
-    recipe_title = db.Column(db.String(255), nullable=False)
+    recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'), nullable=False)
 
     def __repr__(self):
-        return f"Saved('{self.recipe_title}', '{self.user_id}')"
+        return f"Saved('{self.recipe_id}', '{self.user_id}')"
 
 

@@ -101,7 +101,7 @@ def recipes():
     if valid[0]:
         return redirect(url_for(f'{valid[2]}.recipes'))
     else:
-        recipe = Recipe.filter_by(approval=1).query.all()
+        recipe = Recipe.query.filter_by(approval=-1 and 1).all()
         return render_template('unlogged/recipes.html', recipes=recipe)
 
 

@@ -45,7 +45,7 @@
         <tbody>
         {% for recipe in recipes %}
             <tr>
-                <td><a style="color: #0b0b0b" href="{{ url_for('admin.single_recipe', recipe_id=recipe.id ) }}">{{recipe.title}}</a></td>
+                <td><a style="color: #0b0b0b" href="">{{recipe.title}}</a></td>
                 <td>
 
                     {% if recipe.approval < 0 %}

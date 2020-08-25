@@ -41,11 +41,6 @@ def index():
         return render_template('unlogged/index.html')
 
 
-@app.route('/soon')
-def coming_soon():
-    return render_template("error.html", error="This Feature is not available at this moment!")
-
-
 @app.route('/register', methods=["POST", "GET"])
 def register():
     valid = PassiveControls.validation()
@@ -106,8 +101,7 @@ def recipes():
     if valid[0]:
         return redirect(url_for(f'{valid[2]}.recipes'))
     else:
-        page = request.args.get('page', 1, type=int)
-        recipe = Recipe.query.filter_by(approval=-1 and 1).paginate(page=page, per_page=5)
+        recipe = Recipe.query.filter_by(approval=-1 and 1).all()
         return render_template('unlogged/recipes.html', recipes=recipe)
 
 
@@ -118,9 +112,7 @@ def single_recipe(recipe_id):
         return redirect(url_for(f'{valid[2]}.recipes'))
     else:
         recipe = Recipe.query.get_or_404(recipe_id)
-        featured = Recipe.query.filter_by(status=1 and 2)
-        ingredient = recipe.ingredients.split(',')
-        return render_template('unlogged/single.html', user=valid[3], recipe=recipe, featured=featured, ingredients=ingredient)
+        return render_template('admin/single.html', recipes=recipe)
 
 
 @app.route('/chefs')
@@ -129,8 +121,7 @@ def cooks():
     if valid[0]:
         return redirect(url_for(f'{valid[2]}.cooks'))
     else:
-        page = request.args.get('page', 1, type=int)
-        users = User.query.filter_by(type="user").paginate(page=page, per_page=5)
+        users = User.query.filter_by(type="user").all()
         return render_template('unlogged/cooks.html', users=users)
 
 
@@ -151,7 +142,6 @@ def ingredients():
     if valid[0]:
         return redirect(url_for(f'{valid[2]}.ingredients'))
     else:
-        page = request.args.get('page', 1, type=int)
-        ingredient = Ingredient.query.paginate(page=page, per_page=6)
+        ingredient = Ingredient.query.all()
         return render_template('unlogged/ingredients.html', ingredients=ingredient)
 

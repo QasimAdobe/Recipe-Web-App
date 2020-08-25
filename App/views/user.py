@@ -70,8 +70,7 @@ def edit_profile():
 def cooks():
     valid = PassiveControls.validation()
     if valid[0] and valid[2] == "user":
-        page = request.args.get('page', 1, type=int)
-        users = User.query.filter_by(type="user").paginate(page=page, per_page=5)
+        users = User.query.filter_by(type="user").all()
         return render_template('user/cooks.html', user=valid[3], users=users)
     else:
         return render_template("error.html", error=PassiveControls.ErrMsg.access)
@@ -92,8 +91,7 @@ def user_profile(user_id):
 def ingredients():
     valid = PassiveControls.validation()
     if valid[0] and valid[2] == "user":
-        page = request.args.get('page', 1, type=int)
-        ingredient = Ingredient.query.paginate(page=page, per_page=6)
+        ingredient = Ingredient.query.all()
         return render_template('user/ingredients.html', user=valid[3], ingredients=ingredient)
     else:
         return render_template("error.html", error=PassiveControls.ErrMsg.access)
@@ -123,8 +121,7 @@ def publish_recipe():
 def recipes():
     valid = PassiveControls.validation()
     if valid[0] and valid[2] == "user":
-        page = request.args.get('page', 1, type=int)
-        recipe = Recipe.query.filter_by(approval=-1 and 1).paginate(page=page, per_page=5)
+        recipe = Recipe.query.all()
         return render_template('user/recipes.html', user=valid[3], recipes=recipe)
     else:
         return render_template("error.html", error=PassiveControls.ErrMsg.access)

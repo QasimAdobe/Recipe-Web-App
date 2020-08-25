@@ -27,7 +27,10 @@ admin = Blueprint("admin", __name__, static_folder="static", template_folder="/t
 def index():
     valid = PassiveControls.validation()
     if valid[0] and valid[2] == "admin":
-        return render_template('admin/index.html', user=valid[3])
+        user_num = User.query.filter_by(type="user").count()
+        recipe_num = Recipe.query.count()
+        product_num = Ingredient.query.count()
+        return render_template('admin/index.html', user=valid[3], user_num=user_num, recipe_num=recipe_num, product_num=product_num)
     else:
         return render_template("error.html", error=PassiveControls.ErrMsg.access)
 

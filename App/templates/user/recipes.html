@@ -22,7 +22,7 @@
                                        <u>Save Recipe</u> </a> </h2></div>
 
 
-                <h2><a href="{{ url_for('user.single_recipe', recipe_id=recipe.id ) }}">{{recipe.title}}</a></h2>
+                <h2><a href="{{ url_for('user.single_recipe', recipe_id=recipe.id ) }}">{{recipe.title}}</a></h2><br>
                 <p class="mb-3">{{recipe.description[:250]}} <a href="{{ url_for('user.single_recipe', recipe_id=recipe.id ) }}">Read more...</a></p>
                 <div class="post-meta">
                   <span class="d-block">Author: <a href="#">{{recipe.recipe_creator.name}}</a></span>

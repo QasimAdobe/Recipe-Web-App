@@ -32,13 +32,32 @@ def not_found(e):
     return render_template("error.html", error=e)
 
 
+@app.route('/install')
+def install():
+    try:
+        user = User.query.get_or_404(1)
+        return redirect(url_for('index'))
+    except :
+        db.create_all()
+        hashed_pass = bcrypt.generate_password_hash("admin").decode('utf-8')
+        user = User(name="Admin", username="admin", email="admin@admin.com", password=hashed_pass,
+                    type="admin",
+                    designation="Admin")
+        db.session.add(user)
+        db.session.commit()
+        return redirect(url_for('index'))
+
+
 @app.route('/')
 def index():
     valid = PassiveControls.validation()
     if valid[0]:
         return redirect(url_for(f'{valid[2]}.index'))
     else:
-        return render_template('unlogged/index.html')
+        editor_recipe = Recipe.query.filter_by(status=1).all()
+        featured = Recipe.query.filter_by(status=2)
+        users = User.query.filter_by(type="user").paginate(per_page=3)
+        return render_template('unlogged/index.html', editor_recipe=editor_recipe, featured=featured, users=users)
 
 
 @app.route('/soon')

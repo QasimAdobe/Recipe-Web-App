@@ -3,7 +3,6 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from datetime import timedelta
-from flask_mail import Mail
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "s3cr37_k3y"

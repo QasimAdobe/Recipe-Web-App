@@ -84,10 +84,10 @@
                 <p class="d-inline-block p-3">/</p>
                 <a href="{{ url_for('register') }}" class="d-inline-block p-3">Register</a>
             </div>
-            <form action="#" class="search-form d-inline-block">
+            <form action="{{ url_for('coming_soon') }}" class="search-form d-inline-block">
 
               <div class="d-flex">
-                <input type="email" class="form-control" placeholder="Search...">
+                <input type="text" class="form-control" placeholder="Search...">
                 <button type="submit" class="btn btn-secondary" ><span class="icon-search"></span></button>
               </div>
             </form>

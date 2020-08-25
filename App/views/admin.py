@@ -184,7 +184,10 @@ def single_recipe(recipe_id):
     valid = PassiveControls.validation()
     if valid[0] and valid[2] == "admin":
         recipe = Recipe.query.get_or_404(recipe_id)
-        return render_template('admin/single.html', user=valid[3], recipes=recipe)
+        featured = Recipe.query.filter_by(status=1 and 2)
+        ingredient = recipe.ingredients.split(',')
+        return render_template('admin/single.html', user=valid[3], recipe=recipe, featured=featured, ingredients=ingredient)
+
     else:
         return render_template("error.html", error=PassiveControls.ErrMsg.access)
 
